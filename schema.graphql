@@ -1,0 +1,33 @@
+type Customer{
+  name: String
+  email: String
+  age: Int
+}
+
+input CustomerInput{
+  name: String
+  email: String
+  age: Int
+}
+
+type Product{
+  name: String 
+}
+
+input ProductInput{
+  name: String
+} 
+
+type Order{
+  product: [Product!]!
+  customer: Customer!
+}
+
+type Mutation{
+  createOrder(products: [ProductInput!]!, customer: CustomerInput): Order
+}
+
+type Query{
+  customers: [Customer],
+  products: [Product]
+}
