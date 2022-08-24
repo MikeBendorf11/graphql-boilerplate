@@ -1,33 +1,33 @@
-type Customer{
-  name: String
-  email: String
-  age: Int
+schema {
+    query: Query
+    mutation: Mutation
 }
 
-input CustomerInput{
+type Customer{
+  _id: ID
   name: String
   email: String
   age: Int
 }
 
 type Product{
+  _id: ID
   name: String 
 }
 
-input ProductInput{
-  name: String
-} 
-
 type Order{
-  product: [Product!]!
-  customer: Customer!
+  _id: ID
+  price: Int
+  products: [Product]
+  customer: Customer
 }
 
+#don't need input types when grabbing only ID
 type Mutation{
-  createOrder(products: [ProductInput!]!, customer: CustomerInput): Order
+  createOrder(productId: [ID!]!, customerId: ID!, price: Int): Order
 }
 
 type Query{
-  customers: [Customer],
+  customers: [Customer], 
   products: [Product]
 }
