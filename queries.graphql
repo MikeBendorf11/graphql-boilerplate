@@ -1,0 +1,23 @@
+query{
+  customers{
+    _id,
+    name
+  }
+}
+
+mutation{
+	createOrder(
+    productId:["6303fdaa0f01a839d5e57739", "6303fdaa0f01a839d5e5773a"], 
+  	customerId: "6305a8ac98bd2f455f24a3ad",
+    price: 123
+  ) {
+    _id
+    customer {
+      name
+      email
+      age
+    } products {
+      name
+    }
+  }
+}
