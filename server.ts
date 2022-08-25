@@ -4,10 +4,11 @@ const schema = require('./schema')
 const cors = require('cors');
 const mongoDB = require('./data/db')
 const sample = require('./data/sample')
-const {ObjectId }  = require('mongoDB')
+const {ObjectId, Db }  = require('mongoDB')
+import {Customer, Product, MutationCreateOrderArgs} from './gql-types'
 const app = express()
 
-mongoDB.connect().then(async db=>{
+mongoDB.connect().then(async (db: typeof Db)=>{
   let customers = db.collection('customer')
   let products = db.collection('product') 
   let orders = db.collection('orders')
@@ -23,23 +24,21 @@ mongoDB.connect().then(async db=>{
       schema: schema.build,
       graphiql:true,
       rootValue: {
-        customers: ()=>  customers.find({}).toArray(),
-        products: ()=>  products.find({}).toArray(),
+        customers: (): Customer[] =>  customers.find({}).toArray(),
+        products: (): Product [] =>  products.find({}).toArray(),
         //async needed for detailed mutation
-        createOrder: async ({productId, customerId, price}) => {
-          let cid = ObjectId(customerId) //type needed for aggr
-          let pids1 = productId.map(pid=>ObjectId(pid))
+        createOrder: async ({productId, customerId, price}: MutationCreateOrderArgs) => {
           //input is only matching the id
-          let orderRequest = await orders.insertOne({
+          let {insertedId: orderId} = await orders.insertOne({
             price, 
-            customerId: cid, 
-            productId: pids1
+            customerId: ObjectId(customerId), //type needed for aggr, 
+            productId: productId.map(pid=>ObjectId(pid))
           })
           //then lookback doesn't need 3xfind() (faster)
           let agg = await orders.aggregate([
             {
               $match: {
-                _id: orderRequest.insertedId
+                _id: orderId
               }
             },{
               $lookup: {
@@ -66,7 +65,7 @@ mongoDB.connect().then(async db=>{
           let result = await agg.toArray()
           //console.log('hi there')
           return { //output need to match order type
-            _id: orderRequest.insertedId,
+            _id: orderId,
             customer: result[0].customer[0],
             products: result[0].products
           }

@@ -4,8 +4,8 @@
   "description": "GraphQL Boilerplate",
   "main": "server.ts",
   "scripts": {
-    "dev:server": "nodemon server.ts",
-    "json:server": "json-server --watch data.json"
+    "dev": "nodemon server.ts",
+    "generate-types": "graphql-codegen"
   },
   "author": "Mike Bendorf",
   "license": "MIT",

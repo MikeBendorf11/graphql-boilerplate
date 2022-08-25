@@ -4,30 +4,30 @@ schema {
 }
 
 type Customer{
-  _id: ID
-  name: String
-  email: String
-  age: Int
+  _id: ID!
+  name: String!
+  email: String!
+  age: Int!
 }
 
 type Product{
-  _id: ID
-  name: String 
+  _id: ID!
+  name: String!
 }
 
 type Order{
-  _id: ID
-  price: Int
-  products: [Product]
-  customer: Customer
+  _id: ID!
+  price: Int!
+  products: [Product!]!
+  customer: Customer!
 }
 
 #don't need input types when grabbing only ID
 type Mutation{
-  createOrder(productId: [ID!]!, customerId: ID!, price: Int): Order
+  createOrder(productId: [ID!]!, customerId: ID!, price: Int!): Order!
 }
 
 type Query{
-  customers: [Customer], 
-  products: [Product]
+  customers: [Customer!]!, 
+  products: [Product!]!
 }
